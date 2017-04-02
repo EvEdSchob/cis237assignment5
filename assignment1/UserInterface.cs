@@ -1,17 +1,17 @@
-﻿//Author: David Barnes
+﻿//Author: Evan Schober
 //CIS 237
-//Assignment 1
+//Assignment 5
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace assignment1
+namespace assignment5
 {
     class UserInterface
     {
-        const int maxMenuChoice = 5;
+        const int maxMenuChoice = 6;
         //---------------------------------------------------
         //Public Methods
         //---------------------------------------------------
@@ -67,28 +67,25 @@ namespace assignment1
             Console.WriteLine("What is the new items Id?");
             Console.Write("> ");
             string id = Console.ReadLine();
-            Console.WriteLine("What is the new items Description?");
+            Console.WriteLine("What is the new item's Name?");
             Console.Write("> ");
             string description = Console.ReadLine();
-            Console.WriteLine("What is the new items Pack?");
+            Console.WriteLine("What is the new item's Pack?");
             Console.Write("> ");
             string pack = Console.ReadLine();
-
-            return new string[] { id, description, pack };
+            return new string[] { id, description, pack};
         }
 
-        //Display Import Success
-        public void DisplayImportSuccess()
+        public string[] UpdateItemInformation(string id)
         {
             Console.WriteLine();
-            Console.WriteLine("Wine List Has Been Imported Successfully");
-        }
-
-        //Display Import Error
-        public void DisplayImportError()
-        {
-            Console.WriteLine();
-            Console.WriteLine("There was an error importing the CSV");
+            Console.WriteLine("What is the item's new Name?");
+            Console.Write("> ");
+            string description = Console.ReadLine();
+            Console.WriteLine("What is the item's new Pack?");
+            Console.Write("> ");
+            string pack = Console.ReadLine();
+            return new string[] {id, description, pack};
         }
 
         //Display All Items
@@ -148,11 +145,12 @@ namespace assignment1
             Console.WriteLine();
             Console.WriteLine("What would you like to do?");
             Console.WriteLine();
-            Console.WriteLine("1. Load Wine List From CSV");
-            Console.WriteLine("2. Print The Entire List Of Items");
-            Console.WriteLine("3. Search For An Item");
-            Console.WriteLine("4. Add New Item To The List");
-            Console.WriteLine("5. Exit Program");
+            Console.WriteLine("1. Print The Entire List Of Items");
+            Console.WriteLine("2. Search For An Item");
+            Console.WriteLine("3. Add New Item To The List");
+            Console.WriteLine("4. Update An Existing Item");
+            Console.WriteLine("5. Delete Item From The List");
+            Console.WriteLine("6. Exit Program");
         }
 
         //Display the Prompt

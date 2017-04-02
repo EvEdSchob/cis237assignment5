@@ -1,13 +1,14 @@
-﻿//Author: David Barnes
+﻿//Author: Evan Schober
 //CIS 237
-//Assignment 1
+//Assignment 5
 /*
  * The Menu Choices Displayed By The UI
- * 1. Load Wine List From CSV
- * 2. Print The Entire List Of Items
- * 3. Search For An Item
- * 4. Add New Item To The List
- * 5. Exit Program
+ * 1. Print The Entire List Of Items
+ * 2. Search For An Item
+ * 3. Add New Item To The List
+ * 4. Update An Existing Item
+ * 5. Remove An Item From The List
+ * 6. Exit Program
  */
 using System;
 using System.Collections.Generic;
@@ -15,26 +16,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace assignment1
+namespace assignment5
 {
     class Program
     {
         static void Main(string[] args)
         {
-            //Set a constant for the size of the collection
-            const int wineItemCollectionSize = 4000;
+            Console.BufferHeight = 5000;
 
-            //Set a constant for the path to the CSV File
-            const string pathToCSVFile = "../../../datafiles/winelist.csv";
+            BeverageESchoberEntities beveragesESchoberEntities = new BeverageESchoberEntities();
 
             //Create an instance of the UserInterface class
             UserInterface userInterface = new UserInterface();
 
             //Create an instance of the WineItemCollection class
-            IWineCollection wineItemCollection = new WineItemCollection(wineItemCollectionSize);
-
-            //Create an instance of the CSVProcessor class
-            CSVProcessor csvProcessor = new CSVProcessor();
+            BeverageCollection beverageCollection = new BeverageCollection(beveragesESchoberEntities);
 
             //Display the Welcome Message to the user
             userInterface.DisplayWelcomeGreeting();
@@ -43,44 +39,19 @@ namespace assignment1
             //This is the 'primer' run of displaying and getting.
             int choice = userInterface.DisplayMenuAndGetResponse();
 
-            while (choice != 5)
+            while (choice != 6)
             {
                 switch (choice)
                 {
                     case 1:
-                        //Load the CSV File
-                        bool success = csvProcessor.ImportCSV(wineItemCollection, pathToCSVFile);
-                        if (success)
-                        {
-                            //Display Success Message
-                            userInterface.DisplayImportSuccess();
-                        }
-                        else
-                        {
-                            //Display Fail Message
-                            userInterface.DisplayImportError();
-                        }
+                        //Display all of the items
+                        userInterface.DisplayAllItems(beverageCollection.GetPrintStringsForAllItems());
                         break;
 
                     case 2:
-                        //Print Entire List Of Items
-                        string[] allItems = wineItemCollection.GetPrintStringsForAllItems();
-                        if (allItems.Length > 0)
-                        {
-                            //Display all of the items
-                            userInterface.DisplayAllItems(allItems);
-                        }
-                        else
-                        {
-                            //Display error message for all items
-                            userInterface.DisplayAllItemsError();
-                        }
-                        break;
-
-                    case 3:
                         //Search For An Item
                         string searchQuery = userInterface.GetSearchQuery();
-                        string itemInformation = wineItemCollection.FindById(searchQuery);
+                        string itemInformation = beverageCollection.FindById(searchQuery);
                         if (itemInformation != null)
                         {
                             userInterface.DisplayItemFound(itemInformation);
@@ -91,17 +62,45 @@ namespace assignment1
                         }
                         break;
 
-                    case 4:
+                    case 3:
                         //Add A New Item To The List
                         string[] newItemInformation = userInterface.GetNewItemInformation();
-                        if (wineItemCollection.FindById(newItemInformation[0]) == null)
+                        if (beverageCollection.FindById(newItemInformation[0]) == null)
                         {
-                            wineItemCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2]);
+                            beverageCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2]);
                             userInterface.DisplayAddWineItemSuccess();
                         }
                         else
                         {
                             userInterface.DisplayItemAlreadyExistsError();
+                        }
+                        break;
+                    case 4:
+                        //Update an existing item
+                        searchQuery = userInterface.GetSearchQuery();
+                        itemInformation = beverageCollection.FindById(searchQuery);
+                        if (itemInformation != null)
+                        {
+                            userInterface.DisplayItemFound(itemInformation);
+                            beverageCollection.UpdateItem(userInterface.UpdateItemInformation(searchQuery));
+                        }
+                        else
+                        {
+                            userInterface.DisplayItemFoundError();
+                        }
+                        break;
+                    case 5:
+                        //Remove an item from the list
+                        searchQuery = userInterface.GetSearchQuery();
+                        itemInformation = beverageCollection.FindById(searchQuery);
+                        if (itemInformation != null)
+                        {
+                            userInterface.DisplayItemFound(itemInformation);
+                            beverageCollection.RemoveItem(searchQuery);
+                        }
+                        else
+                        {
+                            userInterface.DisplayItemFoundError();
                         }
                         break;
                 }
